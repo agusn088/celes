@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ARTIFACT-START -->
+<title>Herbario de Primavera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=Young+Serif&display=swap">
+<style>
+/* ---------- tokens: claro (base) ---------- */
+:root{
+  --paper:#EFF2EA;
+  --paper-2:#F6F8F2;
+  --card:#FBFCF8;
+  --ink:#22261F;
+  --ink-soft:#4B5346;
+  --muted:#7C8474;
+  --line:#D4DAC9;
+  --line-soft:#E3E8DA;
+  --ceibo:#BE3B2E;
+  --jacaranda:#6E63A6;
+  --polen:#B08321;
+  --tape:rgba(201,154,46,.22);
+
+  --f-display:"Young Serif","Iowan Old Style",Georgia,serif;
+  --f-body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --f-hand:"Caveat","Segoe Script",cursive;
+
+  color-scheme:light dark;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#14170F;
+    --paper-2:#1A1E15;
+    --card:#1E2319;
+    --ink:#E9ECE0;
+    --ink-soft:#BFC6B3;
+    --muted:#8E9686;
+    --line:#333A2B;
+    --line-soft:#272D20;
+    --ceibo:#EE7361;
+    --jacaranda:#AC9FE6;
+    --polen:#E0B84F;
+    --tape:rgba(224,184,79,.18);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14170F;
+  --paper-2:#1A1E15;
+  --card:#1E2319;
+  --ink:#E9ECE0;
+  --ink-soft:#BFC6B3;
+  --muted:#8E9686;
+  --line:#333A2B;
+  --line-soft:#272D20;
+  --ceibo:#EE7361;
+  --jacaranda:#AC9FE6;
+  --polen:#E0B84F;
+  --tape:rgba(224,184,79,.18);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--ceibo);outline-offset:3px;border-radius:2px}
+
+/* ---------- lienzo de pétalos ---------- */
+#petalos{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ---------- estructura ---------- */
+.hoja{
+  position:relative;z-index:1;
+  max-width:980px;margin:0 auto;
+  padding-inline:20px;
+}
+section{padding-block:clamp(44px,7vw,80px)}
+section + section{border-top:1px solid var(--line-soft)}
+
+.rotulo{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  font-weight:700;color:var(--muted);margin:0 0 14px;
+}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:clamp(38px,8.2vw,72px);line-height:1.02;letter-spacing:-.015em}
+h2{font-size:clamp(25px,4.2vw,36px);line-height:1.14}
+h3{font-size:19px;line-height:1.25}
+p{margin:0 0 1em;max-width:62ch}
+p:last-child{margin-bottom:0}
+em.cientifico{font-family:var(--f-display);font-style:italic}
+
+/* ---------- portada ---------- */
+.portada{padding-block:clamp(56px,10vw,104px) clamp(40px,6vw,64px)}
+.portada .fecha{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+  color:var(--ceibo);margin-bottom:26px;
+}
+.portada .fecha::after{content:"";width:46px;height:1px;background:var(--ceibo);opacity:.5}
+.portada .bajada{
+  font-size:clamp(17px,2.2vw,20px);color:var(--ink-soft);
+  margin-top:22px;max-width:46ch;
+}
+.rama{
+  margin-top:30px;width:min(100%,360px);height:auto;
+  color:var(--jacaranda);
+}
+.acciones{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:30px}
+.boton{
+  font-family:var(--f-body);font-size:14px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--paper-2);background:var(--ceibo);
+  border:none;border-radius:999px;padding:13px 24px;cursor:pointer;
+  transition:transform .18s ease,filter .18s ease;
+}
+.boton:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.boton:active{transform:translateY(0)}
+.boton.fantasma{
+  background:transparent;color:var(--ink-soft);
+  border:1px solid var(--line);
+}
+.boton.fantasma:hover{border-color:var(--muted);filter:none}
+
+/* ---------- contador ---------- */
+.cifras{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(16px,3vw,34px);margin-top:26px;
+}
+.cifra .n{
+  font-family:var(--f-display);font-size:clamp(34px,6.5vw,58px);
+  line-height:1;display:block;font-variant-numeric:tabular-nums;
+}
+.cifra:nth-child(1) .n{color:var(--ceibo)}
+.cifra:nth-child(2) .n{color:var(--jacaranda)}
+.cifra:nth-child(3) .n{color:var(--polen)}
+.cifra .t{
+  display:block;margin-top:8px;font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);font-weight:700;
+}
+.desde{margin-top:22px;font-family:var(--f-hand);font-size:22px;color:var(--ink-soft)}
+
+/* ---------- herbario ---------- */
+.fichas{
+  display:grid;gap:18px;margin-top:30px;
+  grid-template-columns:repeat(auto-fill,minmax(258px,1fr));
+}
+.ficha{
+  position:relative;background:var(--card);
+  border:1px solid var(--line);
+  padding:22px 20px 20px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.ficha::before{ /* cinta de papel */
+  content:"";position:absolute;top:-7px;left:50%;
+  width:58px;height:15px;transform:translateX(-50%) rotate(-1.4deg);
+  background:var(--tape);
+}
+.ficha .num{
+  font-size:11px;letter-spacing:.16em;color:var(--muted);
+  font-weight:700;font-variant-numeric:tabular-nums;
+}
+.ficha svg{color:var(--jacaranda);align-self:flex-start}
+.ficha .nombre{font-family:var(--f-display);font-style:italic;font-size:19px;line-height:1.2}
+.ficha .hallazgo{
+  font-size:12px;color:var(--muted);letter-spacing:.02em;
+  border-top:1px solid var(--line-soft);padding-top:10px;
+}
+.ficha .nota{font-size:16px;color:var(--ink-soft);margin:0}
+.ficha .mano{
+  font-family:var(--f-hand);font-size:20px;color:var(--ceibo);
+  line-height:1.15;margin-top:auto;
+}
+
+/* ---------- flores ---------- */
+.jardin{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.flor{
+  font-family:var(--f-body);font-size:14px;font-weight:500;
+  background:transparent;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;cursor:pointer;
+  transition:border-color .16s ease,color .16s ease,background .16s ease;
+}
+.flor:hover{border-color:var(--jacaranda);color:var(--ink)}
+.flor[aria-pressed="true"]{
+  background:var(--jacaranda);border-color:var(--jacaranda);color:var(--paper-2);font-weight:700;
+}
+.maceta{
+  margin-top:20px;background:var(--paper-2);
+  border-left:3px solid var(--jacaranda);
+  padding:22px 22px 22px 24px;min-height:128px;
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+}
+.maceta .quien{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--jacaranda);
+}
+.maceta p{font-size:18px;color:var(--ink);margin:0}
+
+/* ---------- carta ---------- */
+.carta{
+  background:var(--card);border:1px solid var(--line);
+  padding:clamp(26px,5vw,48px);margin-top:26px;
+  box-shadow:0 1px 0 var(--line-soft),0 18px 34px -30px rgba(0,0,0,.5);
+}
+.carta .cuerpo{
+  font-family:var(--f-hand);font-size:clamp(21px,3vw,25px);
+  line-height:1.5;color:var(--ink);max-width:48ch;
+}
+.carta .cuerpo p{max-width:none;margin:0 0 .7em}
+.carta .firma{
+  margin-top:22px;font-family:var(--f-hand);font-size:28px;color:var(--ceibo);
+}
+
+/* ---------- fotos ---------- */
+.tira{
+  display:grid;gap:16px;margin-top:26px;
+  grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+}
+.marco{
+  background:var(--card);border:1px solid var(--line);
+  padding:12px 12px 14px;
+}
+.marco .hueco{
+  aspect-ratio:4/5;max-width:100%;
+  border:1px dashed var(--line);
+  display:grid;place-items:center;
+  padding:14px;
+}
+.marco .hueco span{
+  display:block;text-align:center;text-wrap:balance;
+  font-size:12px;color:var(--muted);line-height:1.5;
+}
+.marco .hueco code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11px;color:var(--ink-soft);
+}
+.marco img{aspect-ratio:4/5;object-fit:cover;width:100%}
+.marco figcaption{
+  font-family:var(--f-hand);font-size:19px;color:var(--ink-soft);
+  margin-top:10px;text-align:center;
+}
+
+/* ---------- cierre ---------- */
+.cierre{text-align:center;padding-block:clamp(56px,9vw,96px)}
+.cierre h2{font-size:clamp(28px,5.6vw,46px)}
+.cierre .posdata{
+  font-family:var(--f-hand);font-size:22px;color:var(--muted);
+  margin-top:18px;
+}
+.pie{
+  border-top:1px solid var(--line-soft);
+  padding-block:26px;font-size:12px;color:var(--muted);text-align:center;
+}
+
+@media (max-width:460px){
+  .cifras{grid-template-columns:1fr;gap:22px}
+  .cifra{display:flex;align-items:baseline;gap:14px}
+  .cifra .t{margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="petalos" aria-hidden="true"></canvas>
+
+<main class="hoja">
+
+  <!-- ================= PORTADA ================= -->
+  <section class="portada">
+    <div class="fecha" id="fechaHoy">21 de septiembre</div>
+    <h1>Feliz primavera,<br><span id="nombre">mi amor</span>.</h1>
+    <p class="bajada">Esto no es un ramo. Es un herbario: junté durante un año las
+      cosas tuyas que me gustan, las prensé entre dos hojas y les puse nombre.
+      Bajá despacio.</p>
+
+    <svg class="rama" viewBox="0 0 360 96" fill="none" aria-hidden="true">
+      <path d="M4 78C70 78 108 52 152 42s96-6 140-26" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M62 74c-6-14-2-24 8-28 4 12 2 24-8 28Z" fill="currentColor" opacity=".55"/>
+      <path d="M108 62c-8-12-6-23 3-29 6 11 6 23-3 29Z" fill="currentColor" opacity=".45"/>
+      <path d="M166 42c-9-10-9-21-1-28 7 10 9 21 1 28Z" fill="currentColor" opacity=".6"/>
+      <path d="M222 34c-10-8-12-19-5-27 8 8 12 19 5 27Z" fill="currentColor" opacity=".45"/>
+      <circle cx="258" cy="24" r="6" fill="currentColor" opacity=".7"/>
+      <circle cx="276" cy="16" r="4" fill="currentColor" opacity=".5"/>
+      <circle cx="292" cy="22" r="3" fill="currentColor" opacity=".4"/>
+    </svg>
+
+    <div class="acciones">
+      <button class="boton" id="btnPetalos" type="button">Soltá los pétalos</button>
+      <button class="boton fantasma" id="btnBajar" type="button">Ver el herbario</button>
+    </div>
+  </section>
+
+  <!-- ================= CIFRAS ================= -->
+  <section id="cifras">
+    <p class="rotulo">Datos de campo</p>
+    <h2>Lo que llevamos contado.</h2>
+    <div class="cifras">
+      <div class="cifra"><span class="n" id="cDias">—</span><span class="t">días juntos</span></div>
+      <div class="cifra"><span class="n" id="cPrimaveras">—</span><span class="t">primaveras</span></div>
+      <div class="cifra"><span class="n" id="cDomingos">—</span><span class="t">domingos</span></div>
+    </div>
+    <p class="desde" id="desdeTxt">Contando desde el primer día.</p>
+  </section>
+
+  <!-- ================= HERBARIO ================= -->
+  <section id="herbario">
+    <p class="rotulo">Herbario</p>
+    <h2>Seis especies recolectadas.</h2>
+    <p style="color:var(--ink-soft);margin-top:12px">Todas crecen en el mismo clima: vos cerca.</p>
+    <div class="fichas" id="fichas"></div>
+  </section>
+
+  <!-- ================= FLORES ================= -->
+  <section id="jardin">
+    <p class="rotulo">Elegí una</p>
+    <h2>Cuatro flores, cuatro excusas.</h2>
+    <div class="jardin" id="botonesFlor" role="group" aria-label="Elegí una flor"></div>
+    <div class="maceta" aria-live="polite">
+      <span class="quien" id="florNombre">Ceibo</span>
+      <p id="florTexto">Tocá una flor.</p>
+    </div>
+  </section>
+
+  <!-- ================= CARTA ================= -->
+  <section id="carta">
+    <p class="rotulo">Sin prensar</p>
+    <h2>Esto va suelto.</h2>
+    <div class="carta">
+      <div class="cuerpo" id="cartaCuerpo"></div>
+      <div class="firma" id="cartaFirma">—</div>
+    </div>
+  </section>
+
+  <!-- ================= FOTOS ================= -->
+  <section id="album">
+    <p class="rotulo">Muestras</p>
+    <h2>Pruebas fotográficas.</h2>
+    <div class="tira" id="tira"></div>
+  </section>
+
+  <!-- ================= CIERRE ================= -->
+  <section class="cierre">
+    <h2>Que florezca todo,<br>otra vez, con vos.</h2>
+    <p class="posdata" id="posdata">Feliz primavera.</p>
+  </section>
+
+  <p class="pie">Hecho a mano, con paciencia y pocas flores de verdad.</p>
+</main>
+
+<script>
+/* =======================================================================
+   EDITÁ ACÁ. Todo lo de abajo es tuyo: cambiá el nombre, la fecha,
+   los motivos y la carta. No hace falta tocar nada más del archivo.
+   ======================================================================= */
+const CONFIG = {
+  // Cómo se llama ella (o el apodo que uses).
+  nombre: "mi amor",
+
+  // Desde cuándo están juntos. Formato AAAA-MM-DD.
+  desde: "2023-09-21",
+
+  // Cómo firmás la carta.
+  firma: "Agus",
+
+  // Las fichas del herbario. Agregá o sacá las que quieras.
+  motivos: [
+    { especie:"Risa repentina",
+      hallazgo:"Cocina, 23:40. Ejemplar abundante.",
+      nota:"Te reís antes del remate del chiste. Me arruinás todos los chistes y no me importa nada.",
+      mano:"se propaga rápido" },
+
+    { especie:"Mano buscadora",
+      hallazgo:"Cada semáforo en rojo.",
+      nota:"Tu mano encuentra la mía sin mirar. Es el truco de magia que mejor te sale.",
+      mano:"no falla nunca" },
+
+    { especie:"Terquedad amable",
+      hallazgo:"Los meses difíciles.",
+      nota:"Cuando me quiero rendir vos no decís nada grandilocuente. Te quedás. Con eso alcanza.",
+      mano:"raíz profunda" },
+
+    { especie:"Cantito desafinado",
+      hallazgo:"Ruta, ventanilla baja, volumen alto.",
+      nota:"Te sabés mal la letra de todas las canciones y las cantás igual, con una convicción que da envidia.",
+      mano:"florece en movimiento" },
+
+    { especie:"Planes en voz alta",
+      hallazgo:"Domingo, sobremesa larga.",
+      nota:"Hablás del año que viene como si fuera obvio que estoy adentro. Gracias por lo obvio.",
+      mano:"anotado, eh" },
+
+    { especie:"Silencio cómodo",
+      hallazgo:"Cualquier día, cualquier hora.",
+      nota:"Podemos no decir nada durante una hora y no pasa nada malo. Eso con muy poca gente pasa.",
+      mano:"la especie más rara" }
+  ],
+
+  // Las cuatro flores del jardincito interactivo.
+  flores: [
+    { nombre:"Ceibo",
+      texto:"La flor nacional. Roja, terca, florece igual cuando hace frío. Como vos en pleno agosto." },
+    { nombre:"Jazmín",
+      texto:"No se ve, se huele. Como cuando entrás a un lugar y yo ya sé que llegaste, sin darme vuelta." },
+    { nombre:"Jacarandá",
+      texto:"Tarda un montón en florecer y después tira todo de golpe. Yo tardé. Después tiré todo de golpe." },
+    { nombre:"Glicina",
+      texto:"Crece agarrándose de algo. No es debilidad, es estrategia. Agarrate cuando quieras." }
+  ],
+
+  // La carta. Cada renglón de la lista es un párrafo.
+  carta: [
+    "Hoy arranca la primavera y lo único que se me ocurrió fue hacerte esto, que es medio ridículo y me llevó bastante más de lo que pensaba.",
+    "No sé explicar bien lo que pasa desde que estás. Es como cuando termina el invierno y un día salís sin campera y te das cuenta tarde. Así: sin aviso y mucho mejor.",
+    "Gracias por bancarme los días en los que no soy fácil. Gracias por los otros también.",
+    "Feliz primavera. Te quiero un montón."
+  ],
+
+  // Fotos: poné los archivos en una carpeta fotos/ y listá acá
+  // { src:"fotos/1.jpg", pie:"aquel día en la costa" }
+  fotos: []
+};
+
+/* ======================= de acá para abajo, la máquina ================= */
+(function(){
+  "use strict";
+
+  const $ = (s) => document.querySelector(s);
+  const esc = (t) => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* ---- portada ---- */
+  $("#nombre").textContent = CONFIG.nombre;
+  $("#posdata").textContent = "Feliz primavera, " + CONFIG.nombre + ".";
+  const hoy = new Date();
+  $("#fechaHoy").textContent = hoy.toLocaleDateString("es-AR",{day:"numeric",month:"long"});
+
+  /* ---- cifras ---- */
+  const inicio = new Date(CONFIG.desde + "T00:00:00");
+  if (!isNaN(inicio)) {
+    const dias = Math.max(0, Math.floor((hoy - inicio) / 86400000));
+    // una primavera por cada 21 de septiembre que pasó desde el inicio
+    let primaveras = 0;
+    for (let a = inicio.getFullYear(); a <= hoy.getFullYear(); a++) {
+      const p = new Date(a, 8, 21);
+      if (p >= inicio && p <= hoy) primaveras++;
+    }
+    const fmt = new Intl.NumberFormat("es-AR");
+    $("#cDias").textContent = fmt.format(dias);
+    $("#cPrimaveras").textContent = fmt.format(primaveras);
+    $("#cDomingos").textContent = fmt.format(Math.floor(dias / 7));
+    $("#desdeTxt").textContent = "Desde el " +
+      inicio.toLocaleDateString("es-AR",{day:"numeric",month:"long",year:"numeric"}) + ". Y seguimos.";
+  }
+
+  /* ---- herbario ---- */
+  const hojita = (i) => {
+    const giro = [-8, 6, -3, 9, -6, 4][i % 6];
+    return '<svg width="42" height="42" viewBox="0 0 42 42" fill="none" aria-hidden="true" style="transform:rotate(' + giro + 'deg)">' +
+      '<path d="M21 39V19" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<path d="M21 21C13 21 8 16 8 8c8 0 13 5 13 13Z" fill="currentColor" opacity=".38"/>' +
+      '<path d="M21 21c8 0 13-5 13-13-8 0-13 5-13 13Z" fill="currentColor" opacity=".55"/>' +
+      '<circle cx="21" cy="13" r="3.2" fill="currentColor" opacity=".8"/>' +
+      '</svg>';
+  };
+
+  $("#fichas").innerHTML = CONFIG.motivos.map((m, i) =>
+    '<article class="ficha">' +
+      '<span class="num">Nº ' + String(i + 1).padStart(2, "0") + '</span>' +
+      hojita(i) +
+      '<h3 class="nombre">' + esc(m.especie) + '</h3>' +
+      '<p class="nota">' + esc(m.nota) + '</p>' +
+      '<p class="hallazgo">' + esc(m.hallazgo) + '</p>' +
+      '<p class="mano">' + esc(m.mano) + '</p>' +
+    '</article>'
+  ).join("");
+
+  /* ---- flores ---- */
+  const cont = $("#botonesFlor");
+  cont.innerHTML = CONFIG.flores.map((f, i) =>
+    '<button class="flor" type="button" aria-pressed="' + (i === 0) + '" data-i="' + i + '">' +
+      esc(f.nombre) + '</button>'
+  ).join("");
+  const pintarFlor = (i) => {
+    const f = CONFIG.flores[i];
+    $("#florNombre").textContent = f.nombre;
+    $("#florTexto").textContent = f.texto;
+    cont.querySelectorAll(".flor").forEach((b, j) =>
+      b.setAttribute("aria-pressed", String(j === i)));
+  };
+  cont.addEventListener("click", (e) => {
+    const b = e.target.closest(".flor");
+    if (b) pintarFlor(Number(b.dataset.i));
+  });
+  if (CONFIG.flores.length) pintarFlor(0);
+
+  /* ---- carta ---- */
+  $("#cartaCuerpo").innerHTML = CONFIG.carta.map(p => "<p>" + esc(p) + "</p>").join("");
+  $("#cartaFirma").textContent = "— " + CONFIG.firma;
+
+  /* ---- fotos ---- */
+  const fotos = CONFIG.fotos.length ? CONFIG.fotos : [
+    { pie:"acá va una foto" }, { pie:"y acá otra" }, { pie:"la que más te guste" }
+  ];
+  $("#tira").innerHTML = fotos.map(f =>
+    '<figure class="marco">' +
+      (f.src
+        ? '<img src="' + esc(f.src) + '" alt="' + esc(f.pie || "") + '">'
+        : '<div class="hueco"><span>Guardá la foto en <code>fotos/</code> y sumala a <code>CONFIG.fotos</code></span></div>') +
+      '<figcaption>' + esc(f.pie || "") + '</figcaption>' +
+    '</figure>'
+  ).join("");
+
+  /* ---- pétalos ---- */
+  const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv = $("#petalos");
+  const ctx = cv.getContext("2d");
+  let w = 0, h = 0, dpr = 1, petalos = [], corriendo = false, raf = 0;
+  const tintas = ["#BE3B2E", "#6E63A6", "#C99A2E", "#D98E86", "#9C93CE"];
+
+  function medir(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = Math.floor(w * dpr); cv.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function nuevo(desdeArriba){
+    return {
+      x: Math.random() * w,
+      y: desdeArriba ? -20 - Math.random() * h * 0.6 : Math.random() * h,
+      r: 5 + Math.random() * 7,
+      vy: 0.35 + Math.random() * 0.75,
+      vx: -0.25 + Math.random() * 0.5,
+      a: Math.random() * Math.PI * 2,
+      va: -0.02 + Math.random() * 0.04,
+      vaiven: 0.4 + Math.random() * 1.1,
+      fase: Math.random() * Math.PI * 2,
+      op: 0.35 + Math.random() * 0.45,
+      color: tintas[(Math.random() * tintas.length) | 0]
+    };
+  }
+
+  function dibujar(p){
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.a);
+    ctx.globalAlpha = p.op;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -p.r);
+    ctx.bezierCurveTo(p.r * 0.95, -p.r * 0.5, p.r * 0.7, p.r * 0.75, 0, p.r);
+    ctx.bezierCurveTo(-p.r * 0.7, p.r * 0.75, -p.r * 0.95, -p.r * 0.5, 0, -p.r);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function cuadro(t){
+    ctx.clearRect(0, 0, w, h);
+    for (const p of petalos){
+      p.fase += 0.012;
+      p.y += p.vy;
+      p.x += p.vx + Math.sin(p.fase) * p.vaiven * 0.35;
+      p.a += p.va;
+      if (p.y - p.r > h + 30){ Object.assign(p, nuevo(true)); }
+      if (p.x < -40) p.x = w + 30;
+      if (p.x > w + 40) p.x = -30;
+      dibujar(p);
+    }
+    raf = requestAnimationFrame(cuadro);
+  }
+
+  function arrancar(cantidad){
+    medir();
+    if (!petalos.length){
+      const base = w < 520 ? 16 : 28;
+      petalos = Array.from({ length: base }, () => nuevo(false));
+    }
+    if (cantidad){
+      for (let i = 0; i < cantidad; i++) petalos.push(nuevo(true));
+      if (petalos.length > 90) petalos.splice(0, petalos.length - 90);
+    }
+    if (!corriendo && !quieto){ corriendo = true; raf = requestAnimationFrame(cuadro); }
+    if (quieto){ ctx.clearRect(0, 0, w, h); petalos.forEach(dibujar); }
+  }
+
+  window.addEventListener("resize", () => { medir(); if (quieto){ ctx.clearRect(0,0,w,h); petalos.forEach(dibujar); } });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && corriendo){ cancelAnimationFrame(raf); corriendo = false; }
+    else if (!document.hidden && !corriendo && !quieto && petalos.length){
+      corriendo = true; raf = requestAnimationFrame(cuadro);
+    }
+  });
+
+  $("#btnPetalos").addEventListener("click", () => arrancar(26));
+  $("#btnBajar").addEventListener("click", () => {
+    document.getElementById("herbario").scrollIntoView({
+      behavior: quieto ? "auto" : "smooth", block: "start"
+    });
+  });
+
+  arrancar(0);
+})();
+</script>
+<!-- ARTIFACT-END -->
+</body>
+</html>
