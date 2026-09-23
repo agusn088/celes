@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Carrusel Milas Zapala</title>
+<style>
+  @font-face{font-family:Anton;src:url(fonts/Anton.ttf)}
+  @font-face{font-family:Caveat;font-weight:700;src:url(fonts/Caveat-Bold.ttf)}
+  @font-face{font-family:Roboto;font-weight:400;src:url(fonts/Roboto-400.ttf)}
+  @font-face{font-family:Roboto;font-weight:500;src:url(fonts/Roboto-500.ttf)}
+  @font-face{font-family:Roboto;font-weight:700;src:url(fonts/Roboto-700.ttf)}
+  body{margin:0;background:#333;display:flex;flex-direction:column;gap:40px;align-items:flex-start}
+  .slide{width:1080px;height:1350px;position:relative;overflow:hidden;box-sizing:border-box}
+
+  /* ---- Slide 1: chat ---- */
+  .s1{background:#0b141a;font-family:Roboto,sans-serif;display:flex;align-items:center;justify-content:center}
+  .chat{width:960px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+  .photo{width:720px;height:470px;border-radius:18px;
+    background:url(original.jpg) -168px -8px / 1169px 993px no-repeat;margin-bottom:6px}
+  .b{background:#1f2c34;color:#e9edef;border-radius:18px;padding:20px 26px 16px;font-size:36px;line-height:1.35;max-width:880px}
+  .b .t{font-size:22px;color:#8696a0;float:right;margin:22px 0 -8px 30px}
+
+  /* ---- Slide 2: info ---- */
+  .s2{background:#f4e6c8;color:#3b1d0e;font-family:Roboto,sans-serif;padding:90px 90px 70px;display:flex;flex-direction:column}
+  .s2::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(135deg,rgba(59,29,14,.035) 0 18px,transparent 18px 36px);pointer-events:none}
+  .brand{font-family:Anton,sans-serif;font-size:48px;letter-spacing:6px;color:#c8321e}
+  .kicker{font-family:Caveat,cursive;font-weight:700;font-size:72px;color:#3b1d0e;margin-top:40px;transform:rotate(-3deg);transform-origin:left}
+  .big{font-family:Anton,sans-serif;font-size:300px;line-height:.9;color:#c8321e;margin-top:10px;letter-spacing:-2px}
+  .big small{font-size:120px;color:#3b1d0e;letter-spacing:0}
+  .sub{font-family:Anton,sans-serif;font-size:92px;line-height:1;text-transform:uppercase;margin-top:6px}
+  .list{list-style:none;padding:0;margin:56px 0 0;font-size:42px;line-height:1.5;font-weight:500}
+  .list li::before{content:"✔ ";color:#c8321e;font-weight:700}
+  .price{position:absolute;right:80px;top:250px;width:320px;height:320px;border-radius:50%;
+    background:#f2b705;color:#3b1d0e;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transform:rotate(10deg);box-shadow:0 10px 0 #3b1d0e;border:6px solid #3b1d0e}
+  .price span{font-family:Roboto;font-weight:700;font-size:30px;letter-spacing:3px}
+  .price b{font-family:Anton,sans-serif;font-size:92px;line-height:1.05}
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end}
+  .joke{font-size:30px;max-width:620px;line-height:1.35;opacity:.85}
+  .back{font-size:26px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c8321e}
+</style></head><body>
+
+<div class="slide s1" id="s1"><div class="chat">
+  <div class="photo"></div>
+  <div class="b">MATIAS VOS SOS PELOTUDO?<span class="t">16:13</span></div>
+  <div class="b">Como vas a gastar 40 lucas<br>en un ramo de flores????<span class="t">16:13</span></div>
+  <div class="b">Con esa plata comprábamos 5 kilos<br>de milanesas y comíamos todo el mes<span class="t">16:14</span></div>
+  <div class="b">Y encima con puré 😤<span class="t">16:14</span></div>
+  <div class="b">QUE HAGO YO CON ESTO? LO EMPANO?<span class="t">16:15</span></div>
+</div></div>
+
+<div class="slide s2" id="s2">
+  <div class="brand">MILAS ZAPALA</div>
+  <div class="kicker">La posta, Matías:</div>
+  <div class="big">5<small>KG</small></div>
+  <div class="sub">de milanesas</div>
+  <ul class="list">
+    <li>Listas para freír u hornear</li>
+    <li>Rinden todo el mes</li>
+    <li>Cero flores, 100% amor</li>
+  </ul>
+  <div class="price"><span>TODO POR</span><b>$PRECIO</b></div>
+  <div class="foot">
+    <div class="joke">Regalá algo que se come.<br>Pedí las tuyas por mensaje 📩</div>
+    <div class="back">El 25 volvemos</div>
+  </div>
+</div>
+</body></html>
