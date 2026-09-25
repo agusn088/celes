@@ -147,3 +147,42 @@ Genera `resultado.png` y estas imágenes de control: `_cmp` y `_full` (antes y d
 - **Rampa lineal de oscuro a piel:** queda gris plano y monótono.
 - **Rellenar los pelitos existentes de negro:** parece estampado de leopardo.
 - **Oscurecer con color:** deja un velo gris plano.
+
+---
+
+# Cómo se comportan los puntitos en un fade pulido (referencia)
+
+Medido en un fade de referencia bien hecho (foto 7). Los puntitos oscuros son el pelito
+cortado y la piel se ve entre ellos. El largo del fade se toma de la línea de peso a la piel.
+En la referencia son unos 190 px: `t = 0` es la línea y `t = 1` es la piel.
+
+| Tramo | `t` | Qué pasa con los puntitos | Cobertura de oscuro | Brillo (0 = negro, 1 = piel) |
+|---|---|---|---|---|
+| **Negro** | 0 – 0,2 | Pelitos largos: trazos acostados en la dirección del crecimiento, pegados en una masa. La piel apenas asoma como agujeritos claros. | ~87 % | 0 → 0,45 |
+| **Negro → gris** | 0,2 – 0,4 | La masa se rompe: los trazos se acortan y se separan. | 85 % → 65 % | 0,45 → 0,75 |
+| **Gris** | 0,4 – 0,55 | Rayitas cortas y puntos separados. La cantidad de puntos llega al máximo. | 65 % → 47 % | 0,75 → 0,85 |
+| **Claro** | 0,55 – 1 | Hay la **misma cantidad de puntos**, pero cada vez más chicos y claros (pelito más corto). | 47 % → 8 % | 0,85 → 0,96 |
+| **Piel** | > 1 | Quedan puntitos sueltos y poros. La piel nunca queda lisa ni limpia. | < 3 % | 1 |
+
+## Qué se aprende
+
+1. **El folículo no cambia de lugar.** De la mitad para abajo la cantidad de puntos es
+   constante, unos 12 cada 1000 px². Lo que aclara es que cada punto es **más chico y menos
+   oscuro**, no que haya menos.
+2. **Arriba el oscuro es forma, no color.** En el negro, los pelitos son trazos largos que
+   se tocan. El fade se aclara porque esos trazos se cortan en rayitas y después en puntos.
+3. **La piel entre los puntos también cambia.** En los agujeritos del negro se ve más
+   oscura, por la sombra del pelo. Por eso el "blanco de fondo" se aclara junto con los puntos.
+4. **Más blanco que negro.** Con el brillo a mitad del fade ya en 0,85, el tramo negro es
+   corto y la mitad de abajo es clara. Coincide con el perfil `WHITE` del taper.
+5. **Nunca termina en piel limpia.** Abajo siguen quedando puntitos sueltos.
+
+## Cómo usarlo al editar
+
+- **Aclarar un tramo:** achicar y aclarar los puntitos que ya están (erosionar el oscuro de
+  cada punto), sin borrarlos ni pintar encima.
+- **Oscurecer un tramo:** agrandar un poco los puntitos reales o traer, re-mapeando,
+  pelitos más largos de más arriba. Nunca crear puntos nuevos.
+- **Controlar la cobertura y el brillo** por tramo contra la tabla de arriba.
+  `puntillismo_ref.npy` guarda las columnas `t`, `brillo`, `cobertura` y
+  `puntos por 1000 px²`.
